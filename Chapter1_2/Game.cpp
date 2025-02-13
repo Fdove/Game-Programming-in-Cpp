@@ -1,0 +1,277 @@
+#include "Game.h"
+
+// Game 생성자
+Game::Game() : mWindow(nullptr), mRenderer(nullptr), mIsValid(false), mIsRunning(true),
+mPaddlePos1{ static_cast<float>(thickness), 768 / 2 }, mPaddlePos2{ 1024 - static_cast<float>(thickness), 768 / 2 },
+diff(0),
+mTicksCount(0), mPaddleDir1(0), mPaddleDir2(0)
+{
+	if (!SDL_Init(SDL_INIT_VIDEO))
+	{
+		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		return;
+	}
+
+	mWindow = SDL_CreateWindow(
+		"Game Programming in C++ (Chapter 1)",	// 윈도우 제목
+		// 100,	// 윈도우의 좌측 상단 x좌표
+		// 100,	// 윈도우의 좌측 상단 y좌표
+		1024,	// 윈도우 너비
+		768,		// 윈도우 높이
+		0			// 플래스 (0은 어떤 플래스도 설정되지 않음을 의미)
+	);
+
+	if (!mWindow)
+	{
+		SDL_Log("Failed to create window: %s", SDL_GetError());
+		return;
+	}
+
+	mRenderer = SDL_CreateRenderer(
+		mWindow,	// 렌더링을 위해 생성한 윈도우
+		NULL			// 일반적으로 -1 -> NULL
+	);
+
+	if (!mRenderer)
+	{
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		return;
+	}
+
+	for (size_t index{}; index < BALL_COUNT; ++index)
+	{
+		Ball newBall;
+		newBall.pos = { 1024 / 2, 768 / 2 };
+		// 공의 속도를 각 방향으로 100-200으로 설정, 부호도 난수로 설정
+		newBall.vel = { static_cast<float>( (rand() % 101 + 100) * ((rand() % 2) ? -1 : 1) ), static_cast<float>( (rand() % 101 + 100) * ((rand() % 2) ? -1 : 1) )};
+		// 공의 색도 a를 제외한 각 요소가 100-255이 되도록 랜덤으로 설정
+		newBall.color = { static_cast<Uint8>(rand() % 156 + 100), static_cast<Uint8>(rand() % 156 + 100), static_cast<Uint8>(rand() % 156 + 100), static_cast<Uint8>(255) };
+		mBalls.push_back(newBall);
+	}
+
+	mIsValid = true;
+}
+
+// Game 소멸자
+Game::~Game()
+{
+	SDL_DestroyWindow(mWindow);
+	SDL_DestroyRenderer(mRenderer);
+	SDL_Quit();
+}
+
+bool Game::IsValid() const
+{
+	return mIsValid;
+}
+
+void Game::RunLoop()
+{
+	while (mIsRunning)
+	{
+		ProcessInput();
+		UpdateGame();
+		GenerateOuput();
+	}
+}
+
+void Game::ProcessInput()
+{
+	SDL_Event sdlEvent;
+	// 큐에 여전히 이벤트가 남아 있는 동안
+	while (SDL_PollEvent(&sdlEvent))
+	{
+		switch (sdlEvent.type)
+		{
+		case SDL_EVENT_QUIT:
+			mIsRunning = false;
+			break;
+		}
+	}
+
+	// 키보드의 상태 얻기
+	const Uint8* state = (Uint8*)SDL_GetKeyboardState(NULL);
+	// 이스케이프 키를 눌렀다면 루프 종료
+	if (state[SDL_SCANCODE_ESCAPE])
+	{
+		mIsRunning = false;
+	}
+
+	// 패들의 위치를 제어하는 멤버 변수 갱신
+	mPaddleDir1 = 0;
+	if (state[SDL_SCANCODE_W])
+	{
+		mPaddleDir1 -= 1;
+	}
+	if (state[SDL_SCANCODE_S])
+	{
+		mPaddleDir1 += 1;
+	}
+	mPaddleDir2 = 0;
+	if (state[SDL_SCANCODE_I])
+	{
+		mPaddleDir2 -= 1;
+	}
+	if (state[SDL_SCANCODE_K])
+	{
+		mPaddleDir2 += 1;
+	}
+}
+
+void Game::UpdateGame()
+{
+	// 마지막 프레임 이후로 16ms가 경과할 때까지 대기
+	while (SDL_GetTicks() < mTicksCount + 16);
+
+	// 델타 시간은 마지막 프레임의 틱값과 현재 프레임 틱값의 차
+	// (초 단위로 변환)
+	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+	// 다음 프레임을 위해 틱값을 갱신
+	mTicksCount = SDL_GetTicks();
+
+	// 최대 델타 시간값으로 고정
+	if (deltaTime > 0.05f)
+	{
+		deltaTime = 0.05f;
+	}
+
+	// 주석: 델타 시간의 함수로 게임 세계의 오브젝트를 갱신!
+	if (mPaddleDir1 != 0)
+	{
+		mPaddlePos1.y += mPaddleDir1 * 300.f * deltaTime;
+		// 패들이 화면 영역을 벗어나는지를 검증하자!
+		if (mPaddlePos1.y < (paddleH / 2.0f + thickness))
+		{
+			mPaddlePos1.y = paddleH / 2.0f + thickness;
+		}
+		else if (mPaddlePos1.y > (768.0f - paddleH / 2.0f - thickness))
+		{
+			mPaddlePos1.y = 768.0f - paddleH / 2.0f - thickness;
+		}
+	}
+	if (mPaddleDir2 != 0)
+	{
+		mPaddlePos2.y += mPaddleDir2 * 300.f * deltaTime;
+		// 패들이 화면 영역을 벗어나는지를 검증하자!
+		if (mPaddlePos2.y < (paddleH / 2.0f + thickness))
+		{
+			mPaddlePos2.y = paddleH / 2.0f + thickness;
+		}
+		else if (mPaddlePos2.y > (768.0f - paddleH / 2.0f - thickness))
+		{
+			mPaddlePos2.y = 768.0f - paddleH / 2.0f - thickness;
+		}
+	}
+
+	for (auto& ball : mBalls)
+	{
+		ball.pos.x += ball.vel.x * deltaTime;
+		ball.pos.y += ball.vel.y * deltaTime;
+
+		// 위쪽 벽 충돌 감지
+		if (ball.pos.y <= thickness && ball.vel.y < 0.0f)
+		{
+			ball.vel.y *= -1;
+		}
+		// 아래쪽 벽 충돌 감지
+		if (ball.pos.y >= 768 - thickness && ball.vel.y > 0.0f)
+		{
+			ball.vel.y *= -1;
+		}
+
+		// 왼쪽 벽 충돌 시 다시 가운데로 배치
+		if (ball.pos.x <= thickness && ball.vel.x < 0.0f)
+		{
+			ball.pos = { 1024 / 2, 768 / 2 };
+		}
+		// 오른쪽 벽 충돌 시 다시 가운데로 배치
+		if (ball.pos.x >= 1024 - thickness && ball.vel.x > 0.0f)
+		{
+			ball.pos = { 1024 / 2, 768 / 2 };
+		}
+
+		// 왼쪽 패들과 공 충돌 검사
+		diff = mPaddlePos1.y - ball.pos.y;
+		diff *= (diff < 0 ? -1 : 1);
+		if (
+			// y 차가 충분히 작고
+			diff <= paddleH / 2.0f &&
+			// 공이 올바른 x 값을 갖고 있고
+			ball.pos.x <= 25.0f && ball.pos.x >= 20.0f &&
+			// 공이 왼쪽으로 이동하고 있다면
+			ball.vel.x < 0.0f
+			)
+		{
+			ball.vel.x *= -1.0f;
+		}
+		// 오른쪽 패들과 공 충돌 검사
+		diff = mPaddlePos2.y - ball.pos.y;
+		diff *= (diff < 0 ? -1 : 1);
+		if (
+			// y 차가 충분히 작고
+			diff <= paddleH / 2.0f &&
+			// 공이 올바른 x 값을 갖고 있고
+			ball.pos.x <= 1024 - 20.0f && ball.pos.x >= 1024 - 25.0f &&
+			// 공이 오른쪽으로 이동하고 있다면
+			ball.vel.x > 0.0f
+			)
+		{
+			ball.vel.x *= -1.0f;
+		}
+	}
+}
+
+void Game::GenerateOuput()
+{
+	// 배경 그리기
+	SDL_SetRenderDrawColor(
+		mRenderer,
+		0,		// R
+		0,		// G
+		255,	// B
+		255	// A
+	);
+	SDL_RenderClear(mRenderer);
+
+	// 색상을 녹색으로 변경
+	SDL_SetRenderDrawColor(mRenderer, 0, 255, 0, 255);
+	// 위, 아래, 오른쪽 벽 그리기
+	SDL_FRect topRect{ 0, 0, 1024, thickness };
+	SDL_RenderFillRect(mRenderer, &topRect);
+	SDL_FRect bottomRect{ 0, 768 - thickness, 1024, thickness };
+	SDL_RenderFillRect(mRenderer, &bottomRect);
+
+	// 색상을 흰색으로 변경
+	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+	// 왼쪽 패들 그리기
+	SDL_FRect paddleRect1{
+		mPaddlePos1.x - thickness / 2,
+		mPaddlePos1.y - paddleH / 2.0f,
+		thickness,
+		paddleH
+	};
+	// 오른쪽 패들 그리기
+	SDL_RenderFillRect(mRenderer, &paddleRect1);
+	SDL_FRect paddleRect2{
+		mPaddlePos2.x - thickness / 2,
+		mPaddlePos2.y - paddleH / 2.0f,
+		thickness,
+		paddleH
+	};
+	SDL_RenderFillRect(mRenderer, &paddleRect2);
+	// 공들 그리기
+	for (auto& ball : mBalls)
+	{
+		// 공 색상 설정
+		SDL_SetRenderDrawColor(mRenderer, ball.color.r, ball.color.g, ball.color.b, ball.color.a);
+		SDL_FRect ballRect{
+			ball.pos.x - thickness / 2,
+			ball.pos.y - thickness / 2,
+			thickness,
+			thickness
+		};
+		SDL_RenderFillRect(mRenderer, &ballRect);
+	}
+	// 화면 출력
+	SDL_RenderPresent(mRenderer);
+}
