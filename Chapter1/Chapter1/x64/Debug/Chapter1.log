@@ -1,0 +1,27 @@
+﻿  Game.cpp
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.h(31,34): warning C4244: '초기화 중': 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Main.cpp
+  (소스 파일 'Game.cpp'을(를) 컴파일하는 중)
+  
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(111,28): warning C4244: '=': 'Uint64'에서 'Uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(189,33): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(189,33): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(191,31): warning C4838: 'int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(191,31): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(191,50): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(191,50): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(193,28): warning C4838: 'int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(193,28): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(193,44): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(193,44): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(202,3): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(202,3): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(210,3): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(210,3): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(211,3): warning C4838: 'const int'에서 'float'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.cpp(211,3): warning C4244: '초기화 중': 'const int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+D:\Code\Game_Programming_in_Cpp\Chapter1\Game.h(31,34): warning C4244: '초기화 중': 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'Main.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
+  Chapter1.vcxproj -> D:\Code\Game_Programming_in_Cpp\Chapter1\x64\Debug\Chapter1.exe
