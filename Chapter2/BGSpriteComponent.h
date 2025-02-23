@@ -1,5 +1,12 @@
-#pragma once
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
+#pragma once
 #include "SpriteComponent.h"
 #include <vector>
 #include "Math.h"
@@ -7,22 +14,22 @@
 class BGSpriteComponent : public SpriteComponent
 {
 public:
-	// 기본 그리기 순서값을 낮은 값으로 설정 (배경이므로)
+	// Set draw order to default to lower (so it's in the background)
 	BGSpriteComponent(class Actor* owner, int drawOrder = 10);
-	// 부모로부터 오버로딩한 Update/draw 함수
+	// Update/draw overridden from parent
 	void Update(float deltaTime) override;
 	void Draw(SDL_Renderer* renderer) override;
-	// 배경에 사용되는 텍스처 설정
+	// Set the textures used for the background
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
-	// 화면 크기를 얻거나 스크롤 속도값을 설정 및 얻는 함수
+	// Get/set screen size and scroll speed
 	void SetScreenSize(const Vector2& size) { mScreenSize = size; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 	float GetScrollSpeed() const { return mScrollSpeed; }
 private:
-	// 각 배경 이미지와 배경 이미지의 오프셋 값을 캡슐화한 구조체
+	// Struct to encapsulate each bg image and its offset
 	struct BGTexture
 	{
-		SDL_Texture* mTexture;
+		SDL_Texture* mTexture = nullptr;
 		Vector2 mOffset;
 	};
 	std::vector<BGTexture> mBGTextures;

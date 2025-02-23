@@ -1,19 +1,28 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #pragma once
 
 class Component
 {
 public:
-	// 생성자
-	// (업데이트 순서값이 작을구록 컴포넌트는 더 빨리 갱신된다)
+	// Constructor
+	// (the lower the update order, the earlier the component updates)
 	Component(class Actor* owner, int updateOrder = 100);
-	// 소멸자
+	// Destructor
 	virtual ~Component();
-	// 델타 시간으로 이 컴포넌트를 업데이트
+	// Update this component by delta time
 	virtual void Update(float deltaTime);
+
 	int GetUpdateOrder() const { return mUpdateOrder; }
 protected:
-	// 소유자 액터
+	// Owning actor
 	class Actor* mOwner;
-	// 컴포넌트 업데이트 순서
+	// Update order of component
 	int mUpdateOrder;
 };
