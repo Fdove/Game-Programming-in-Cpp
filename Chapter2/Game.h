@@ -1,15 +1,16 @@
-#pragma once
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
 
-#include <SDL3/SDL.h>
-#include <vector>
+#pragma once
+#include "SDL3/SDL.h"
 #include <unordered_map>
 #include <string>
-
-struct Vector2
-{
-	float x;
-	float y;
-};
+#include <vector>
 
 class Game
 {
@@ -30,23 +31,28 @@ public:
 private:
 	void ProcessInput();
 	void UpdateGame();
-	void GenerateOuput();
+	void GenerateOutput();
 	void LoadData();
 	void UnloadData();
 
-	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	Uint32 mTicksCount;
-	// 게임이 계속 실행돼야 하는지를 판단
-	bool mIsRunning;
-	// 액터의 갱신 여부를 판단
-	bool mUpdatingActors;
+	// Map of textures loaded
+	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
-	// 활성화된 액터
+	// All the actors in the game
 	std::vector<class Actor*> mActors;
-	// 대기 중인 액터
+	// Any pending actors
 	std::vector<class Actor*> mPendingActors;
 
-	// 그려질 모든 스프라이트 컴포넌트
+	// All the sprite components drawn
 	std::vector<class SpriteComponent*> mSprites;
+
+	SDL_Window* mWindow;
+	SDL_Renderer* mRenderer;
+	Uint64 mTicksCount;
+	bool mIsRunning;
+	// Track if we're updating actors right now
+	bool mUpdatingActors;
+
+	// Game-specific
+	class Ship* mShip; // Player's ship
 };

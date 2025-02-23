@@ -1,4 +1,20 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "AnimSpriteComponent.h"
+#include "Math.h"
+
+AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder)
+	:SpriteComponent(owner, drawOrder)
+	, mCurrFrame(0.0f)
+	, mAnimFPS(24.0f)
+{
+}
 
 void AnimSpriteComponent::Update(float deltaTime)
 {
@@ -6,17 +22,28 @@ void AnimSpriteComponent::Update(float deltaTime)
 
 	if (mAnimTextures.size() > 0)
 	{
-		// 프레임 레이트와 델타 시간을 기반으로
-		// 현재 프레임 갱신
+		// Update the current frame based on frame rate
+		// and delta time
 		mCurrFrame += mAnimFPS * deltaTime;
 
-		// 애니메이션 텍스처 수를 초과하면 현재 프레임을 래핑한다
+		// Wrap current frame if needed
 		while (mCurrFrame >= mAnimTextures.size())
 		{
 			mCurrFrame -= mAnimTextures.size();
 		}
 
-		// 현재 텍스처를 설정
+		// Set the current texture
 		SetTexture(mAnimTextures[static_cast<int>(mCurrFrame)]);
+	}
+}
+
+void AnimSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textures)
+{
+	mAnimTextures = textures;
+	if (mAnimTextures.size() > 0)
+	{
+		// Set the active texture to first frame
+		mCurrFrame = 0.0f;
+		SetTexture(mAnimTextures[0]);
 	}
 }
